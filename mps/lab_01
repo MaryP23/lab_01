@@ -1,0 +1,47 @@
+import time
+
+arr_x = ['Приготовить', 'Обслуживание']
+arr_y = ['Кофе готовится', 'Машина выполняет обслуживание ',
+         'Машина ждет (режим ожидания)']
+arr_z = ['Ожидание', 'Приготовление', 'Обслуживание']
+transition_table = {
+    'z1': {'x1': 'z2', 'x3': 'z3'},
+    'z2': {'x1': 'z2', 'x3': 'z3'},
+    'z3': {'x1': 'z2', 'x3': 'z1'}
+}
+output_table = {
+    'z1': {'x1': 'y1', 'x3': 'y2'},
+    'z2': {'x1': 'y1', 'x3': 'y2'},
+    'z3': {'x1': 'y1', 'x3': 'y3'}
+}
+current_state = 'z1'
+while True:
+    print(f"Текущее состояние: {arr_z[int(current_state[1]) - 1]} \n Выберите входной сигнал: \n 1 - Приготовить \n 3 - Обслуживание \n 0 - Выход")
+    choice = int(input('Ваш выбор: '))
+    input_signal = f'x{choice}'
+    input_name = arr_x[0 if choice == 1 else 1]
+    next_state = transition_table[current_state][input_signal]
+    next_output = output_table[current_state][input_signal]
+    next_state_name = arr_z[int(next_state[1]) - 1]
+    output_name = arr_y[int(next_output[1]) - 1]
+    print(f"\nВходной сигнал: {input_name} \nПереход: {arr_z[int(current_state[1]) - 1]} → {next_state_name} \nВыходной сигнал: {output_name}")
+    if input_signal == 'x1':
+        print("\n⏰ Приготовление идет 3 секунд...")
+        for i in range(3, 0, -1):
+            print(f"Осталось: {i} сек")
+            time.sleep(1)
+        print(f"✅ Приготовление завершено! \n Состояние меняется на: {arr_z[2]} \n ⏰ Обслуживание идет 3 секунд...")
+        current_state = 'z3'
+        for i in range(3, 0, -1):
+            print(f"Осталось: {i} сек")
+            time.sleep(1)
+        print("✅ Обслуживание завершено! \n Переход в режим ожидания")
+        current_state = 'z1'
+    elif input_signal == 'x3':
+        print("\n⏰ Обслуживание идет 10 секунд...")
+        for i in range(3, 0, -1):
+            print(f"Осталось: {i} сек")
+            time.sleep(1)
+        print("✅ Обслуживание завершено!")
+        current_state = next_state
+        print(f"Переход в: {arr_z[int(current_state[1]) - 1]}")
